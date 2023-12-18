@@ -1,0 +1,76 @@
+package frc.team5115.Robot;
+
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.team5115.Classes.Hardware.HardwareDrivetrain;
+import frc.team5115.Classes.Hardware.NAVx;
+import frc.team5115.Classes.Software.Drivetrain;
+import frc.team5115.Classes.Software.PhotonVision;
+import frc.team5115.Commands.Auto.AutoCommandGroup;
+
+public class RobotContainer {
+    private final Joystick joy;
+    private final Drivetrain drivetrain;
+    private final GenericEntry rookie;
+    private final NAVx navx;
+    private AutoCommandGroup autoCommandGroup;
+
+    public RobotContainer() {
+        ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("SmartDashboard");
+        rookie = shuffleboardTab.add("Rookie?", false).getEntry();
+
+        joy = new Joystick(0);
+        navx = new NAVx();
+
+        HardwareDrivetrain hardwareDrivetrain = new HardwareDrivetrain(navx);
+        PhotonVision photonVision = new PhotonVision();
+        drivetrain = new Drivetrain(hardwareDrivetrain, photonVision, navx);
+
+        configureButtonBindings();
+    }
+
+    public void configureButtonBindings() {
+    }
+
+    public void disabledInit(){
+        drivetrain.stop();
+    }
+
+    public void stopEverything(){
+        drivetrain.stop();
+    }
+
+    public void startTest() {
+    }
+
+    public void testPeriodic() {
+    }
+
+    public void startAuto(){
+        if(autoCommandGroup != null) autoCommandGroup.cancel();
+        drivetrain.resetEncoders();
+        drivetrain.resetNAVx();
+        drivetrain.stop();
+        drivetrain.init();
+
+        autoCommandGroup = new AutoCommandGroup(drivetrain);
+        autoCommandGroup.schedule();
+    }
+
+    public void autoPeriod() {
+        drivetrain.updateOdometry();
+    }
+
+    public void startTeleop(){
+        if(autoCommandGroup != null) autoCommandGroup.cancel();
+        
+        System.out.println("Starting teleop");
+        drivetrain.resetEncoders();
+    }
+
+    public void teleopPeriodic() {
+        drivetrain.SwerveDrive(-joy.getRawAxis(1), joy.getRawAxis(4), joy.getRawAxis(0), rookie.getBoolean(false));
+    }
+}
