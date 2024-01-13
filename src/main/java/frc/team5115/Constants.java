@@ -37,14 +37,21 @@ public class Constants{
     public static final byte JOY_Y_AXIS_ID = 1;
     public static final byte JOY_Z_AXIS_ID = 4; 
 
-    
+    // 2023 Feedforward
+    public static final double kS = 0.18296; 
+    public static final double kV = 4.2023;
+    public static final double kA = 0.28613;
+
     public static final double DRIVE_MOTOR_MAX_VOLTAGE = 12;
+
+    public static final double TARGET_ANGLE = 1;
 
     public static final class Paths{
 
         private static final PathConstraints constraints = new PathConstraints(4, 3);
 
-        public static final PathPlannerTrajectory defaultPath = PathPlanner.loadPath("Path_Name_Here", constraints);
+        public static final PathPlannerTrajectory denToYardInside = PathPlanner.loadPath("Den to Yard Inside", constraints);
+        public static final PathPlannerTrajectory denToYardOutside = PathPlanner.loadPath("Den to Yard Outside", constraints);
 
     }
 

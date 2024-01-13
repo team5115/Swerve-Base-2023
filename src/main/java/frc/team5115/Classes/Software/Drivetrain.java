@@ -13,7 +13,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team5115.Constants;
 import frc.team5115.Classes.Hardware.HardwareDrivetrain;
 import frc.team5115.Classes.Hardware.NAVx;
 import frc.team5115.Constants.DriveConstants;
@@ -49,27 +51,38 @@ public class Drivetrain extends SubsystemBase {
     }
 
     private Pose2d getStartingPoseGuess() {
-        return new Pose2d();
+            return Constants.Paths.denToYardOutside.sample(0).poseMeters;
     }
 
     /**
 	 * Sets the encoder values to 0.
 	 */
     public void resetEncoders() {
+        navx.resetNAVx();
         hardwareDrivetrain.resetEncoders();
     }
     
     public void SwerveDrive(double forward, double turn, double right, boolean rookieMode){
+
+        if(Math.abs(forward)< 0.1){
+            forward = 0;
+        }
+        if(Math.abs(turn)< 0.1){
+            turn = 0;
+        }
+        if(Math.abs(right)< 0.1){
+            right = 0;
+        }        
         if(rookieMode){
             right *= 0.1;
             turn *= 0.1;
-            forward *= 0.1;
+            forward *= -0.1;
         }else{
             right *= 0.2;
             turn *= 0.2;
-            forward *= 0.2;
+            forward *= -0.2;
         }
-        hardwareDrivetrain.drive(forward, right, turn, false, false);
+        hardwareDrivetrain.drive(forward, right, turn, true, false);
     }
 
 	/**
@@ -79,7 +92,8 @@ public class Drivetrain extends SubsystemBase {
     public void updateOdometry() {
         poseEstimator.update(navx.getYawRotation2D(), hardwareDrivetrain.getModulePositions());
 
-        Optional<EstimatedRobotPose> result = photonVision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+        //Optional<EstimatedRobotPose> result = photonVision.getEstimatedGlobalPose(poseEstimator.getEstimatedPosition());
+        Optional<EstimatedRobotPose> result = Optional.empty();
         if (result.isPresent()) {
             EstimatedRobotPose camPose = result.get();
             poseEstimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
