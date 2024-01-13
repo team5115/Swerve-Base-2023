@@ -62,7 +62,7 @@ public class Drivetrain extends SubsystemBase {
         hardwareDrivetrain.resetEncoders();
     }
     
-    public void SwerveDrive(double forward, double turn, double right, boolean rookieMode){
+    public void SwerveDrive(double forward, double turn, double right, boolean rookieMode, boolean fieldOriented){
 
         if(Math.abs(forward)< 0.1){
             forward = 0;
@@ -82,7 +82,7 @@ public class Drivetrain extends SubsystemBase {
             turn *= 0.2;
             forward *= -0.2;
         }
-        hardwareDrivetrain.drive(forward, right, turn, true, false);
+        hardwareDrivetrain.drive(forward, right, turn, fieldOriented, false);
     }
 
 	/**

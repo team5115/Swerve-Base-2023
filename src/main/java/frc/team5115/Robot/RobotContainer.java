@@ -2,6 +2,7 @@ package frc.team5115.Robot;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.team5115.Classes.Hardware.HardwareDrivetrain;
@@ -16,6 +17,7 @@ public class RobotContainer {
     private final GenericEntry rookie;
     private final NAVx navx;
     private AutoCommandGroup autoCommandGroup;
+    private boolean fieldOriented = true;
 
     public RobotContainer() {
         ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("SmartDashboard");
@@ -71,6 +73,9 @@ public class RobotContainer {
     }
 
     public void teleopPeriodic() {
-        drivetrain.SwerveDrive(-joy.getRawAxis(1), joy.getRawAxis(4), joy.getRawAxis(0), rookie.getBoolean(false));
+        if(joy.getRawButton(0)){
+            fieldOriented = !fieldOriented;
+        }
+        drivetrain.SwerveDrive(-joy.getRawAxis(1), joy.getRawAxis(4), joy.getRawAxis(0), rookie.getBoolean(false), fieldOriented);
     }
 }

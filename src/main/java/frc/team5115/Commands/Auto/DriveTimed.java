@@ -21,7 +21,7 @@ public class DriveTimed extends CommandBase{
     public void initialize() {
         timer.reset();
         timer.start();
-        drivetrain.SwerveDrive(speedNormalized, 0, 0, false);
+        drivetrain.SwerveDrive(speedNormalized, 0, 0, true, false);
     }
 
     @Override
